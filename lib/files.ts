@@ -3,8 +3,11 @@ import { FileModel } from "@/models/FileDoc";
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const MAX_PDF_BYTES = 8 * 1024 * 1024;
 
-export const fileUrl = (id?: string | null) =>
-  id ? `${process.env.PUBLIC_API_URL ?? ""}/api/files/${id}` : null;
+export const fileUrl = (id?: string | null) => {
+  if (!id) return null;
+  const base = (process.env.PUBLIC_API_URL ?? "").trim().replace(/\/+$/, "");
+  return `${base}/api/files/${id}`;
+};
 
 /** Detect the real type from magic bytes — never trust the client's MIME / extension. */
 export function sniff(buf: Buffer): { mime: string; kind: "image" | "document" } | null {
