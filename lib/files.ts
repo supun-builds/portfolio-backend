@@ -5,7 +5,10 @@ export const MAX_PDF_BYTES = 8 * 1024 * 1024;
 
 export const fileUrl = (id?: string | null) => {
   if (!id) return null;
-  const base = (process.env.PUBLIC_API_URL ?? "").trim().replace(/\/+$/, "");
+  let base = (process.env.PUBLIC_API_URL ?? "").trim().replace(/\/+$/, "");
+  if (base && !base.startsWith("http://") && !base.startsWith("https://")) {
+    base = `https://${base}`;
+  }
   return `${base}/api/files/${id}`;
 };
 
