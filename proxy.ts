@@ -2,23 +2,33 @@ import { NextRequest, NextResponse } from "next/server";
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "http://localhost:3001")
   .split(",")
-  .map((o) => o.trim())
+  .map((o) => o.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
 const SAFE_METHODS = ["GET", "HEAD", "OPTIONS"];
 
 export function proxy(request: NextRequest) {
-  const origin = request.headers.get("origin") ?? "";
-  const isAllowed = allowedOrigins.includes(origin);
+  const origin = (request.headers.get("origin") ?? "").replace(/\/+$/, "");
+
+  // Automatically allow any vercel.app deployment, localhost, wildcard, or listed origin
+  const isAllowed =
+    !origin ||
+    allowedOrigins.includes("*") ||
+    allowedOrigins.includes(origin) ||
+    origin.endsWith(".vercel.app") ||
+    origin.includes("localhost");
 
   const corsHeaders: Record<string, string> = {
     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Max-Age": "600",
     Vary: "Origin",
   };
-  if (isAllowed) corsHeaders["Access-Control-Allow-Origin"] = origin;
+
+  if (origin && isAllowed) {
+    corsHeaders["Access-Control-Allow-Origin"] = origin;
+  }
 
   // Preflight
   if (request.method === "OPTIONS") {

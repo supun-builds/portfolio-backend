@@ -33,19 +33,29 @@ export async function signToken(user: RequestUser) {
 }
 
 export function setAuthCookie(response: NextResponse, token: string) {
+  const isProd = process.env.NODE_ENV === "production";
   response.cookies.set({
     name: COOKIE_NAME,
     value: token,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     path: "/",
     maxAge: TOKEN_TTL_SECONDS,
   });
 }
 
 export function clearAuthCookie(response: NextResponse) {
-  response.cookies.set({ name: COOKIE_NAME, value: "", httpOnly: true, path: "/", maxAge: 0 });
+  const isProd = process.env.NODE_ENV === "production";
+  response.cookies.set({
+    name: COOKIE_NAME,
+    value: "",
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }
 
 export async function getUser(request: NextRequest): Promise<RequestUser | null> {
