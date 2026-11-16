@@ -17,6 +17,26 @@ export const project = (p: any) => ({
   updatedAt: p.updatedAt,
 });
 
+export const research = (r: any) => ({
+  id: String(r._id),
+  title: r.title,
+  badge: r.badge ?? "🎓 Final-year thesis · October 2026",
+  authors: r.authors ?? "",
+  description: r.description,
+  coverImage: r.coverImage ?? null,
+  coverImageUrl: fileUrl(r.coverImage),
+  images: ((r.images as string[]) ?? []).map((id) => ({ id, url: fileUrl(id) })),
+  thesisUrl: r.thesisUrl ?? "",
+  paperUrl: r.paperUrl ?? "",
+  projectUrl: r.projectUrl ?? "",
+  githubUrl: r.githubUrl ?? "",
+  featured: r.featured ?? true,
+  order: r.order ?? 0,
+  status: r.status ?? "PUBLISHED",
+  createdAt: r.createdAt,
+  updatedAt: r.updatedAt,
+});
+
 export const profile = (p: any) => ({
   fullName: p?.fullName ?? "",
   headline: p?.headline ?? "Building Smart Solutions.",
@@ -28,6 +48,10 @@ export const profile = (p: any) => ({
   cvName: p?.cvName ?? "",
   githubUrl: p?.githubUrl ?? "",
   linkedinUrl: p?.linkedinUrl ?? "",
+  researchSubtitle:
+    p?.researchSubtitle ?? "My final-year thesis, two extended abstracts published at HIRS 2025, and technical articles.",
+  researchGateUrl: p?.researchGateUrl ?? "",
+  mediumUrl: p?.mediumUrl ?? "",
   connectText: p?.connectText ?? "",
   email: p?.email ?? "",
   phone: p?.phone ?? "",

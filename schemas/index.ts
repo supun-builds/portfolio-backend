@@ -26,6 +26,22 @@ export const TechnologySchema = z.object({
   logo: optionalFileId,
 });
 
+export const ResearchSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(200),
+  badge: z.string().trim().max(100).default("🎓 Final-year thesis · October 2026"),
+  authors: z.string().trim().max(300).default(""),
+  description: z.string().trim().min(1, "Description is required").max(3000),
+  coverImage: optionalFileId,
+  images: z.array(objectId).max(12, "Max 12 images").default([]),
+  thesisUrl: optionalUrl,
+  paperUrl: optionalUrl,
+  projectUrl: optionalUrl,
+  githubUrl: optionalUrl,
+  featured: z.boolean().default(true),
+  order: z.number().default(0),
+  status: z.enum(["PUBLISHED", "DRAFT"]).default("PUBLISHED"),
+});
+
 export const ProfileSchema = z.object({
   fullName: z.string().trim().max(100),
   headline: z.string().trim().max(120),
@@ -35,6 +51,9 @@ export const ProfileSchema = z.object({
   cvName: z.string().trim().max(150).optional(),
   githubUrl: optionalUrl,
   linkedinUrl: optionalUrl,
+  researchSubtitle: z.string().trim().max(300).optional(),
+  researchGateUrl: optionalUrl,
+  mediumUrl: optionalUrl,
   connectText: z.string().trim().max(600),
   email: z.union([z.email().max(200), z.literal("")]),
   phone: z.string().trim().max(40),

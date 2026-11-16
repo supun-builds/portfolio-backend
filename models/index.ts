@@ -53,6 +53,13 @@ const profileSchema = new Schema(
     cvName: { type: String, default: "" },
     githubUrl: { type: String, default: "" },
     linkedinUrl: { type: String, default: "" },
+    // "Research & Writing" section
+    researchSubtitle: {
+      type: String,
+      default: "My final-year thesis, two extended abstracts published at HIRS 2025, and technical articles.",
+    },
+    researchGateUrl: { type: String, default: "" },
+    mediumUrl: { type: String, default: "" },
     // "Let's Connect" section
     connectText: { type: String, default: "" },
     email: { type: String, default: "" },
@@ -85,10 +92,31 @@ const fileSchema = new Schema(
   { timestamps: true }
 );
 
+const researchSchema = new Schema(
+  {
+    title: { type: String, required: true, trim: true, maxlength: 200 },
+    badge: { type: String, default: "🎓 Final-year thesis · October 2026", trim: true, maxlength: 100 },
+    authors: { type: String, default: "", trim: true, maxlength: 300 },
+    description: { type: String, required: true, maxlength: 3000 },
+    coverImage: { type: String, default: null }, // File id for main thesis photo
+    images: { type: [String], default: [] }, // Array of File ids for system/architecture screenshots
+    thesisUrl: { type: String, default: "" }, // Google Drive or direct download URL
+    paperUrl: { type: String, default: "" }, // ResearchGate, IEEE, etc.
+    projectUrl: { type: String, default: "" }, // System live demo / project link
+    githubUrl: { type: String, default: "" }, // Source code
+    featured: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+    status: { type: String, enum: ["PUBLISHED", "DRAFT"], default: "PUBLISHED" },
+  },
+  { timestamps: true }
+);
+
 export const User = model("User", userSchema);
 export const Technology = model("Technology", technologySchema);
 export const Project = model("Project", projectSchema);
+export const Research = model("Research", researchSchema);
 export const Profile = model("Profile", profileSchema);
 export const Message = model("Message", messageSchema);
 export const FileModel = model("FileDoc", fileSchema);
 export type ProfileDoc = InferSchemaType<typeof profileSchema>;
+export type ResearchDoc = InferSchemaType<typeof researchSchema>;
